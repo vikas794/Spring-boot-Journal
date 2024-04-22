@@ -17,29 +17,29 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     
     @Autowired
-    private UserRepository UserRepository;
+    private UserRepository userRepository;
 
     public void saveEntry(User User){
         try {
-            UserRepository.save(User);
+            userRepository.save(User);
         } catch (Exception e) {
             log.error("Exception ", e);
         }
     }
 
     public List<User> getAll() {
-        return UserRepository.findAll();
+        return userRepository.findAll();
     }
 
     public Optional<User> findById(ObjectId id) {
-        return UserRepository.findById(id); 
+        return userRepository.findById(id); 
     }
 
     public void DeleteById(ObjectId id) {
-        UserRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
-    public User findByUserName(String UserName) {
-        return UserRepository.findByUserName(UserName);
+    public User findByUserName(String userName) {
+        return userRepository.findByUserName(userName);
     }
 }
