@@ -36,5 +36,16 @@ public class UserController {
     public Optional<User> getUserById(@PathVariable ObjectId myid) {
         return UserService.findById(myid);
     }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<?> updatUser(@RequestBody User user, @PathVariable String username) {
+        User userInDB = UserService.findByUserName(username);
+        if (userInDB != null) {
+            userInDB.setUserName(user.getUserName());
+            userInDB.setPassword(user.getPassword());
+            UserService.saveEntry(userInDB);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
     
 }
