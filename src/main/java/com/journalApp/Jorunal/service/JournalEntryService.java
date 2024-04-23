@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.journalApp.Jorunal.entity.JournalEntry;
 import com.journalApp.Jorunal.entity.User;
@@ -21,12 +22,23 @@ public class JournalEntryService {
     @Autowired
     private UserService UserService;
 
+    @Transactional
     public void saveEntry(JournalEntry JournalEntry, String username) {
-        User user = UserService.findByUserName(username);
-        JournalEntry.setDate(LocalDateTime.now());
-        JournalEntry saved = JournalEntryRepository.save(JournalEntry);
-        user.getJournalEntries().add(saved);
-        UserService.saveEntry(user);
+        try {
+            User user = UserService.findByUserName(username);
+            JournalEntry.setDate(LocalDateTime.now());
+            JournalEntry saved = JournalEntryRepository.save(JournalEntry);
+            user.getJournalEntries().add(saved);
+            UserService.saveEntry(user);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new RuntimeException("AN error had occur while saving an entry", e);
+        }
+
+    }
+
+    public void saveEntry(JournalEntry JournalEntry) {
+        JournalEntryRepository.save(JournalEntry);
     }
 
     public List<JournalEntry> getAll() {
@@ -39,8 +51,9 @@ public class JournalEntryService {
 
     public void DeleteById(ObjectId id, String username) {
         User user = UserService.findByUserName(username);
-        JournalEntryRepository.deleteById(id);
         user.getJournalEntries().removeIf(x -> x.getId().equals(id));
         UserService.saveEntry(user);
+        JournalEntryRepository.deleteById(id);
     }
 }
+    
