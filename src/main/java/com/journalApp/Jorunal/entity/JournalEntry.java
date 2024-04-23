@@ -5,7 +5,9 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Document // (collection = "your_mongo_DB_collection_name") // entire this to select the collection name
 // @Getter

@@ -59,11 +59,10 @@ public class JournalEntryController {
         }
     }
 
-
-    @DeleteMapping("id/{myid}")
-    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myid) {
-        JournalEntryService.DeleteById(myid);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("id/{username}/{myid}")
+    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myid, @PathVariable String username) {
+        JournalEntryService.DeleteById(myid, username);
+        return new ResponseEntity<>("Data Deleted", HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/id/{myid}")
