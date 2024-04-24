@@ -34,7 +34,6 @@ public class JournalEntryService {
             System.out.println(e);
             throw new RuntimeException("AN error had occur while saving an entry", e);
         }
-
     }
 
     public void saveEntry(JournalEntry JournalEntry) {

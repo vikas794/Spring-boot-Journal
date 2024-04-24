@@ -13,6 +13,8 @@ import com.journalApp.Jorunal.entity.JournalEntry;
 import com.journalApp.Jorunal.entity.User;
 import com.journalApp.Jorunal.service.JournalEntryService;
 import com.journalApp.Jorunal.service.UserService;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/journal")
@@ -24,8 +26,13 @@ public class JournalEntryController {
     @Autowired 
     private UserService userService; 
 
+    @GetMapping
+    public ResponseEntity<?> GetAll() {
+        return new ResponseEntity<>(JournalEntryService.getAll(), HttpStatus.OK);
+    }
+    
     @GetMapping("/{userName}")
-    public ResponseEntity<?> getAll(@PathVariable String userName) {
+    public ResponseEntity<?> getAllUserEntity(@PathVariable String userName) {
         User user = userService.findByUserName(userName);
         List<JournalEntry> all = user.getJournalEntries();
         if (all != null && !all.isEmpty()) {
@@ -76,7 +83,7 @@ public class JournalEntryController {
             old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
             old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
             JournalEntryService.saveEntry(old);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(old, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
