@@ -15,7 +15,7 @@ import com.journalApp.Jorunal.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/UserController")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired UserService userService;

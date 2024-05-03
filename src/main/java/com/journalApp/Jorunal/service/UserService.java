@@ -1,30 +1,34 @@
 package com.journalApp.Jorunal.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.journalApp.Jorunal.entity.User;
 import com.journalApp.Jorunal.repository.UserRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class UserService {
     
     @Autowired
     private UserRepository userRepository;
 
-    public void saveEntry(User User){
-        try {
-            userRepository.save(User);
-        } catch (Exception e) {
-            log.error("Exception ", e);
-        }
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public void saveEntry(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("USER"));
+        userRepository.save(user);
+    }
+
+    public void saveNewUser(User User){
+        userRepository.save(User);
     }
 
     public List<User> getAll() {
