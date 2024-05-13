@@ -9,7 +9,14 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NonNull;
+
+/**
+ * The class `User` represents a document in a MongoDB collection with fields
+ * for user information,
+ * roles, and journal entries.
+ */
 @Document(collection = "users")
 @Data
 public class User {
@@ -22,10 +29,10 @@ public class User {
     private String userName;
 
     @NonNull
-    private String password;   
-    
+    private String password;
+
     private List<String> roles;
 
     @DBRef
-    private List<JournalEntry> JournalEntries = new ArrayList<>();
+    private List<JournalEntry> journalEntries = new ArrayList<>();
 }

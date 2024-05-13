@@ -22,16 +22,12 @@ public class UserController {
 
     @Autowired JournalEntryService JournalEntryService;
 
-    @GetMapping
-    public List<User> getAllUser() {
-        return userService.getAll();
-    }
+    // will add tp the admin if reqiured
+    // @GetMapping
+    // public List<User> getAllUser() {
+    //     return userService.getAll();
+    // }
 
-    @PostMapping
-    public User createUser(@RequestBody User userEntry) {
-        userService.saveEntry(userEntry);
-        return userEntry;
-    }
 
     @GetMapping("{username}")
     public ResponseEntity<?> getUserByUserName(@PathVariable String username) {

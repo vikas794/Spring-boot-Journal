@@ -20,36 +20,34 @@ import com.journalApp.Jorunal.service.UserDetailsServiceImpl;
 @EnableWebSecurity
 public class SpringSecurity {
 
-	@Autowired UserDetailsServiceImpl userDetailsService;
-	
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers("/health-check/**").permitAll()
-				.anyRequest().authenticated()
-			)
-			.httpBasic(Customizer.withDefaults())
-			.csrf(csrf -> csrf.disable())
-			.cors(cors -> cors.disable())
-			.headers(headers -> {
-                headers
-                    .httpStrictTransportSecurity(Customizer.withDefaults())
-                    .xssProtection(Customizer.withDefaults())
-                    .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"));
-            })
-			.sessionManagement(sessionManagement -> sessionManagement
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			)
-			;
-			http.authenticationProvider(daoAuthenticationProvider());
+				.authorizeHttpRequests((authorize) -> authorize
+						.requestMatchers("/public/**").permitAll()
+						.anyRequest().authenticated())
+				.httpBasic(Customizer.withDefaults())
+				.csrf(csrf -> csrf.disable())
+				.cors(cors -> cors.disable())
+				.headers(headers -> {
+					headers
+							.httpStrictTransportSecurity(Customizer.withDefaults())
+							.xssProtection(Customizer.withDefaults())
+							.contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"));
+				})
+				.sessionManagement(sessionManagement -> sessionManagement
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.authenticationProvider(daoAuthenticationProvider());
 		return http.build();
 	}
 
-    @Bean
+	@Bean
 	public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+		return new BCryptPasswordEncoder();
+	}
 
 	@Bean
 	public AuthenticationManager authenticationManagerr(AuthenticationConfiguration configuration) throws Exception {
@@ -65,12 +63,12 @@ public class SpringSecurity {
 	}
 }
 
-	// @Bean
-	// public UserDetailsService userDetailsService() {
-	// 	UserDetails userDetails = User
-	// 		.withUsername("user")
-	// 		.password(encoder().encode("user"))
-	// 		.roles("USER")
-	// 		.build();
-	// 	return new InMemoryUserDetailsManager(userDetails);
-	// }
+// @Bean
+// public UserDetailsService userDetailsService() {
+// UserDetails userDetails = User
+// .withUsername("user")
+// .password(encoder().encode("user"))
+// .roles("USER")
+// .build();
+// return new InMemoryUserDetailsManager(userDetails);
+// }
