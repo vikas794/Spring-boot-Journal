@@ -1,63 +1,57 @@
 package com.journalApp.Jorunal.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import com.journalApp.Jorunal.entity.JournalEntry;
-import com.journalApp.Jorunal.entity.User;
-import com.journalApp.Jorunal.service.JournalEntryService;
-import com.journalApp.Jorunal.service.UserService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.journalApp.Jorunal.entity.User;
+import com.journalApp.Jorunal.service.UserService;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
 
-    @Autowired JournalEntryService JournalEntryService;
-
-    // will add tp the admin if reqiured
+    // will add to the admin if reqiured
     // @GetMapping
     // public List<User> getAllUser() {
-    //     return userService.getAll();
+    // return userService.getAll();
     // }
-
 
     @GetMapping("{username}")
     public ResponseEntity<?> getUserByUserName(@PathVariable String username) {
-        return new ResponseEntity<>(userService.findByUserName(username),HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(userService.findByUserName(username), HttpStatus.OK);
     }
 
-
-    @PutMapping("{username}")
-    public ResponseEntity<?> updatUser(@RequestBody User user, @PathVariable String username) {
-        User userInDB = userService.findByUserName(username);
-        if (userInDB != null) {
-            userInDB.setUserName(user.getUserName());
-            userInDB.setPassword(user.getPassword());
-            userService.saveEntry(userInDB);
-            return new ResponseEntity<>(userInDB, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping
+    public ResponseEntity<?> updatUser(@RequestBody User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        User userInDB = userService.findByUserName(userName);
+        userInDB.setUserName(user.getUserName());
+        userInDB.setPassword(user.getPassword());
+        userService.saveEntry(userInDB);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    @DeleteMapping("{username}")
-    public ResponseEntity<?> deleteUserByUserName(@PathVariable String username) {
-        User userInDB = userService.findByUserName(username);
-        if (userInDB != null) {
-            for (JournalEntry journalEntry : userInDB.getJournalEntries()) {
-                JournalEntryService.DeleteById(journalEntry.getId(), username);
-            }
-            userService.deleteByUsername(username);
-            return new ResponseEntity<>("Data Deleted", HttpStatus.OK);
-        }
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserByUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        userService.deleteByUsername(userName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

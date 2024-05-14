@@ -12,10 +12,10 @@ import com.journalApp.Jorunal.service.UserService;
 
 @RestController
 @RequestMapping("/public")
-public class HealthCheck {
+public class PublicController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/health-check")
     public String healthCheck() {
